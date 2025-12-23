@@ -1,0 +1,258 @@
+Perfect 👍
+Here is a **complete hands-on Git & GitHub challenge repo** you can practice with **step by step**, exactly like a real developer workflow.
+You can do this **locally + on GitHub**.
+
+---
+
+# 🧪 Hands-On Git Challenge: `git-mastery-lab`
+
+## 🎯 Goal
+
+By the end, you will confidently use:
+
+* branches
+* commits
+* merge & rebase
+* revert & reset
+* stash
+* tags
+* PR workflow
+* conflict resolution
+
+---
+
+## 🧩 Challenge Setup
+
+### 1️⃣ Create the repo
+
+```bash
+mkdir git-mastery-lab
+cd git-mastery-lab
+git init
+git branch -M main
+```
+
+Create a file:
+
+```bash
+echo '# Git Mastery Lab' > README.md
+git add README.md
+git commit -m "Initial commit"
+```
+
+---
+
+## 🔹 Challenge 1 — Feature Branch
+
+### Task
+
+Add a greeting file.
+
+```bash
+git switch -c feature-greeting
+echo 'puts "Hello from Git Mastery"' > greet.rb
+git add greet.rb
+git commit -m "Add greeting script"
+```
+
+Merge:
+
+```bash
+git switch main
+git merge feature-greeting
+```
+
+✅ Learn: fast-forward merge
+
+---
+
+## 🔹 Challenge 2 — Bad Commit & Revert
+
+### Task
+
+Make a bad change:
+
+```bash
+echo 'puts "BROKEN"' >> greet.rb
+git commit -am "Bad change"
+```
+
+Undo safely:
+
+```bash
+git revert HEAD
+```
+
+✅ Learn: safe undo
+
+---
+
+## 🔹 Challenge 3 — Detached HEAD
+
+```bash
+git log --oneline
+git switch <old-commit-hash>
+cat greet.rb
+git switch main
+```
+
+✅ Learn: history inspection
+
+---
+
+## 🔹 Challenge 4 — Reset vs Restore
+
+```bash
+echo "Temp line" >> greet.rb
+git status
+git restore greet.rb
+```
+
+Then:
+
+```bash
+echo "Another temp" >> greet.rb
+git add greet.rb
+git reset HEAD greet.rb
+```
+
+✅ Learn: staging control
+
+---
+
+## 🔹 Challenge 5 — Stash Work
+
+```bash
+echo "WIP change" >> greet.rb
+git stash
+git stash list
+git stash pop
+```
+
+---
+
+## 🔹 Challenge 6 — Merge Conflict
+
+```bash
+git switch -c conflict-branch
+echo 'puts "Conflict from branch"' > greet.rb
+git commit -am "Branch conflict"
+
+git switch main
+echo 'puts "Conflict from main"' > greet.rb
+git commit -am "Main conflict"
+
+git merge conflict-branch
+```
+
+Fix conflict manually → then:
+
+```bash
+git add greet.rb
+git commit
+```
+
+---
+
+## 🔹 Challenge 7 — Tags (Release)
+
+```bash
+git tag v1.0
+git tag
+git show v1.0
+```
+
+---
+
+## 🔹 Challenge 8 — Git Internals
+
+```bash
+git log --oneline
+git cat-file -t <hash>
+git cat-file -p <hash>
+```
+
+Trace:
+
+* commit → tree → blob
+
+---
+
+## 🔹 Challenge 9 — GitHub PR Workflow ⭐
+
+### Push to GitHub
+
+```bash
+git remote add origin https://github.com/YOURNAME/git-mastery-lab.git
+git push -u origin main
+```
+
+### Fork → Feature → PR
+
+```bash
+git switch -c pr-feature
+echo "PR practice" >> README.md
+git commit -am "Practice PR"
+git push origin pr-feature
+```
+
+➡ Open PR on GitHub
+➡ Review → merge → delete branch
+
+Cleanup:
+
+```bash
+git branch -d pr-feature
+```
+
+---
+
+## 🔹 Challenge 10 — Advanced
+
+### Rebase
+
+```bash
+git switch -c rebase-branch
+echo "Line 1" >> README.md
+git commit -am "Commit 1"
+echo "Line 2" >> README.md
+git commit -am "Commit 2"
+
+git switch main
+git rebase rebase-branch
+```
+
+---
+
+# 🏁 Completion Checklist
+
+✔ Created branches
+✔ Merged & rebased
+✔ Resolved conflicts
+✔ Used stash
+✔ Used revert/reset
+✔ Tagged a release
+✔ Opened PR
+✔ Inspected internals
+
+---
+
+## 🧠 Pro Tip
+
+Run this often:
+
+```bash
+git status
+```
+
+It’s your **Git compass** 🧭
+
+---
+
+If you want next:
+
+* 🧠 **Interview Git questions**
+* 🧑‍💻 **Real-world debugging scenarios**
+* 📦 **Monorepo & advanced workflows**
+
+Just tell me 👍
