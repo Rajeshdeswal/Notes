@@ -1,0 +1,513 @@
+Great choice 👍
+Below are **real Git interview debugging questions** that companies actually ask — with **how to think**, **what to say**, and **correct commands**.
+
+Use these to **practice explaining**, not just typing.
+
+---
+
+# 🧠 Git Interview Debugging Questions (with Answers)
+
+---
+
+## 1️⃣ “You committed directly to `main` by mistake. What do you do?”
+
+### Interviewer is testing:
+
+* Branching knowledge
+* Safety
+
+### Best answer:
+
+> “If it’s not pushed, I create a new branch from `main`.
+> If it’s already pushed, I revert the commit.”
+
+### Commands:
+
+```bash
+# Not pushed
+git switch -c feature-fix
+
+# Already pushed
+git revert HEAD
+```
+
+---
+
+## 2️⃣ “Your changes disappeared after `git pull`. How do you recover?”
+
+### Key concept:
+
+* `reflog`
+
+### Best answer:
+
+> “I check `git reflog` to find the lost commit and recover it.”
+
+### Commands:
+
+```bash
+git reflog
+git switch -c recovery <hash>
+```
+
+---
+
+## 3️⃣ “Explain the difference between `git reset` and `git revert`.”
+
+### Expected answer:
+
+> “Reset rewrites history and is only safe locally.
+> Revert creates a new commit and is safe for shared branches.”
+
+### Example:
+
+```bash
+git reset --hard HEAD~1   # local only
+git revert HEAD           # shared branches
+```
+
+---
+
+## 4️⃣ “You’re in detached HEAD and made commits. What now?”
+
+### Best answer:
+
+> “I immediately create a branch to keep the commits.”
+
+```bash
+git switch -c save-work
+```
+
+---
+
+## 5️⃣ “A PR has merge conflicts. How do you handle it?”
+
+### Interviewer wants:
+
+* Calm, methodical approach
+
+### Best answer:
+
+> “I pull the latest `main`, resolve conflicts locally, test, and push.”
+
+```bash
+git fetch origin
+git switch feature
+git merge origin/main
+# fix conflicts
+git add .
+git commit
+git push
+```
+
+---
+
+## 6️⃣ “Someone force-pushed to `main`. How do you recover?”
+
+### Key tools:
+
+* `reflog`
+* `fetch`
+
+### Best answer:
+
+> “I fetch, inspect history, and reset to the correct commit if needed.”
+
+```bash
+git fetch
+git reflog
+git reset --hard origin/main
+```
+
+---
+
+## 7️⃣ “How do you undo a pushed commit that broke production?”
+
+### Correct mindset:
+
+* Safety first
+
+### Best answer:
+
+> “I use `git revert` to safely undo the commit.”
+
+```bash
+git revert <bad-commit>
+git push
+```
+
+---
+
+## 8️⃣ “Why is Git refusing to commit due to line endings?”
+
+### Expected knowledge:
+
+* `autocrlf`
+* `safecrlf`
+
+### Best answer:
+
+> “Git detected unsafe CRLF/LF conversions. I normalize the file.”
+
+```bash
+sed -i 's/\r$//' file
+git add file
+git commit
+```
+
+---
+
+## 9️⃣ “Your PR has too many messy commits. What do you do?”
+
+### Interviewer expects:
+
+* `rebase -i`
+
+### Best answer:
+
+> “I squash commits using interactive rebase before merging.”
+
+```bash
+git rebase -i origin/main
+```
+
+---
+
+## 🔟 “How do you check what exactly is inside a commit?”
+
+### Key concept:
+
+* Git objects
+
+### Best answer:
+
+> “I use `git show` or `git cat-file`.”
+
+```bash
+git show <hash>
+git cat-file -p <hash>
+```
+
+---
+
+## 1️⃣1️⃣ “Explain fast-forward vs merge commit.”
+
+### Strong answer:
+
+> “Fast-forward moves the branch pointer forward without a merge commit when histories haven’t diverged.”
+
+---
+
+## 1️⃣2️⃣ “How do you fix a wrong remote URL?”
+
+```bash
+git remote -v
+git remote set-url origin <url>
+```
+
+---
+
+## 1️⃣3️⃣ “What’s your Git safety checklist?”
+
+### Excellent answer:
+
+> * Check `git status`
+> * Avoid force-push
+> * Prefer revert over reset
+> * Use reflog when in doubt
+
+---
+
+## 🧠 How to answer in interviews (important)
+
+Say **why**, not just **how**:
+
+❌ *“I run git reset.”*
+✅ *“I choose revert because it preserves history on shared branches.”*
+
+---
+
+## 🎯 Final Interview Tip
+
+If you get stuck, say:
+
+> “I’d inspect `git status` and `git log` first.”
+
+Interviewers love that.
+
+---
+
+If you want next:
+
+* 🔥 **Mock interview (I ask, you answer)**
+* 🧪 **Live debugging challenge**
+* 🧭 **Advanced Git internals questions**
+
+Just tell me 👍
+
+
+
+Great 👍
+Below are **advanced Git internals interview questions** with **clear, correct answers**. These focus on how Git *actually works under the hood* and are commonly used for senior / system-level interviews.
+
+---
+
+# 🧠 Advanced Git Internals Interview Questions
+
+---
+
+## 1️⃣ What is a Git object?
+
+**Answer:**
+A Git object is a compressed, immutable data structure stored in `.git/objects`.
+There are **four types**:
+
+* **blob** – file contents
+* **tree** – directory structure
+* **commit** – snapshot + metadata
+* **tag** – named reference to a commit
+
+---
+
+## 2️⃣ How does Git store a file internally?
+
+**Answer:**
+Git stores the **contents**, not the filename, as a **blob object**.
+The filename and permissions are stored in a **tree object**.
+
+> Two identical files → one blob (content-addressed storage).
+
+---
+
+## 3️⃣ Explain how a commit is structured internally
+
+**Answer:**
+A commit object contains:
+
+* A **tree hash** (snapshot of the repo)
+* **Parent commit hash(es)**
+* Author & committer info
+* Commit message
+
+Commits form a **directed acyclic graph (DAG)**.
+
+---
+
+## 4️⃣ What happens when you run `git add`?
+
+**Answer:**
+
+* Git creates **blob objects** for file contents
+* Stores them in `.git/objects`
+* Updates the **index (staging area)**
+
+No commit is created yet.
+
+---
+
+## 5️⃣ What happens when you run `git commit`?
+
+**Answer:**
+
+* Git creates a **tree object** from the index
+* Creates a **commit object** pointing to that tree
+* Moves `HEAD` and the current branch pointer
+
+---
+
+## 6️⃣ What is `HEAD`, really?
+
+**Answer:**
+`HEAD` is a **reference** that usually points to a branch, which then points to a commit.
+
+* Normal state → `HEAD → branch → commit`
+* Detached HEAD → `HEAD → commit`
+
+---
+
+## 7️⃣ Why are Git hashes reliable?
+
+**Answer:**
+
+* Git uses **SHA-1** (and SHA-256 in newer setups)
+* Hash includes:
+
+  * object type
+  * size
+  * content
+
+Any change produces a **different hash**, ensuring integrity.
+
+---
+
+## 8️⃣ What is the Git index (staging area)?
+
+**Answer:**
+The index is a **binary file** (`.git/index`) that represents:
+
+* The exact contents of the *next commit*
+* A middle layer between working tree and repository
+
+---
+
+## 9️⃣ What’s the difference between `git merge` and `git rebase` internally?
+
+**Merge**
+
+* Creates a **new commit**
+* Has **multiple parents**
+* Preserves history
+
+**Rebase**
+
+* Replays commits
+* Creates **new commit hashes**
+* Rewrites history
+
+---
+
+## 🔟 What is a fast-forward merge internally?
+
+**Answer:**
+Git simply moves the branch pointer forward.
+No new commit is created.
+
+---
+
+## 1️⃣1️⃣ How does Git detect renames?
+
+**Answer:**
+Git does **not store renames explicitly**.
+It detects them heuristically by:
+
+* Comparing blob similarity
+* During diff or merge operations
+
+---
+
+## 1️⃣2️⃣ What is `git reflog` and where is it stored?
+
+**Answer:**
+Reflog records **updates to references** (like `HEAD`).
+
+Stored in:
+
+```text
+.git/logs/HEAD
+.git/logs/refs/
+```
+
+Used for recovery.
+
+---
+
+## 1️⃣3️⃣ What are packfiles?
+
+**Answer:**
+Packfiles store many objects efficiently by:
+
+* Delta compression
+* Reducing disk space
+* Speeding up network transfers
+
+Created by:
+
+```bash
+git gc
+```
+
+---
+
+## 1️⃣4️⃣ What happens during `git clone`?
+
+**Answer:**
+
+* Creates `.git`
+* Downloads packfiles
+* Sets up remote tracking branches
+* Checks out default branch
+
+---
+
+## 1️⃣5️⃣ How does Git know what changed?
+
+**Answer:**
+Git compares:
+
+* Working tree vs index
+* Index vs last commit
+
+It never tracks changes line-by-line until diff time.
+
+---
+
+## 1️⃣6️⃣ What is an annotated tag internally?
+
+**Answer:**
+An annotated tag is a **tag object** that:
+
+* Points to a commit
+* Contains metadata (tagger, message)
+
+Lightweight tags are just refs.
+
+---
+
+## 1️⃣7️⃣ What is a shallow clone?
+
+**Answer:**
+A clone with limited history:
+
+```bash
+git clone --depth=1
+```
+
+* Faster
+* Smaller
+* Limited history operations
+
+---
+
+## 1️⃣8️⃣ Why is Git called “content-addressable”?
+
+**Answer:**
+Objects are named by the **hash of their contents**, not by location or filename.
+
+---
+
+## 1️⃣9️⃣ What is the object database?
+
+**Answer:**
+The object database is `.git/objects`, storing all blobs, trees, commits, and tags.
+
+---
+
+## 2️⃣0️⃣ How would you inspect Git internals manually?
+
+**Answer:**
+
+```bash
+git cat-file -t <hash>
+git cat-file -p <hash>
+git ls-tree <tree-hash>
+```
+
+---
+
+## 🧠 Interview Power Tip
+
+When answering internals questions:
+
+* Use correct terminology
+* Mention **objects, refs, index, DAG**
+* Explain **why Git is safe & fast**
+
+---
+
+If you want next:
+
+* 🔥 **Live mock interview**
+* 🧪 **Debug a broken repo challenge**
+* 🧬 **Deep dive: index vs working tree**
+
+Just tell me 👍
