@@ -1,0 +1,317 @@
+Perfect! Here is a **FULLY DETAILED, STEP-BY-STEP** version of **PROJECT 1 — Undoing Work & Recovery Lab**, with:
+
+✔ Explanation of every command
+✔ What happens internally in Git
+✔ Expected output
+✔ Mistakes to simulate
+✔ How to recover
+
+This becomes your **Git Undoing Work Master Project**.
+
+---
+
+# 🚀 **PROJECT 1: Undoing Work & Recovery Lab (Highly Detailed)**
+
+You will learn:
+
+* `git reset` (soft, mixed, hard)
+* `git restore`
+* `git commit --amend`
+* `git reflog` (ultimate recovery tool)
+* Recover deleted commits
+* Recover deleted files
+* Undo a wrong commit
+* Undo staged files
+* Undo only some changes
+* Safely vs dangerously undoing work
+
+---
+
+# 📌 **STEP 1 — Create a new lab folder & initialize Git**
+
+```bash
+mkdir git-lab-undo
+cd git-lab-undo
+git init
+```
+
+### ✔ Explanation
+
+* `git init` creates a hidden `.git` folder that contains all Git history and metadata.
+* Now this folder is a Git repository.
+
+### ✔ Expected output
+
+```
+Initialized empty Git repository in /your/path/git-lab-undo/.git/
+```
+
+---
+
+# 📌 **STEP 2 — Create first file and commit**
+
+```bash
+echo "line1" > app.txt
+git add app.txt
+git commit -m "Initial commit"
+```
+
+### ✔ Explanation
+
+* `echo "line1" > app.txt` creates the file.
+* `git add app.txt` stages the file (moves it to **staging area**).
+* `git commit` saves staged files into the repository history.
+
+---
+
+# 📌 **STEP 3 — Make a wrong commit (simulate mistake)**
+
+```bash
+echo "secret=123" > config.env
+git add .
+git commit -m "Added config"
+```
+
+### ❌ This commit contains secret data.
+
+### ❌ You want to undo it (but keep the file).
+
+---
+
+# 📌 **STEP 4 — Undo last commit but keep changes (`--soft`)**
+
+```bash
+git reset --soft HEAD~1
+```
+
+### ✔ Explanation
+
+* `HEAD~1` means "one commit before the current one."
+* `--soft` removes the commit **but keeps the changes stage**.
+
+### ✔ After running soft reset:
+
+* Commit **gone**
+* `config.env` still in **staging** (`git status` will show it)
+
+### ✔ Why is this useful?
+
+If your commit message was wrong
+or you committed to the wrong branch
+— this lets you fix it without losing your work.
+
+---
+
+# 📌 **STEP 5 — Stage wrong file & unstage it (restore)**
+
+Let’s simulate another mistake:
+
+```bash
+git add config.env   # Staged accidentally
+```
+
+Now unstage:
+
+```bash
+git restore --staged config.env
+```
+
+### ✔ Explanation
+
+* `git restore --staged` removes file from staging **but does not touch your working directory**.
+* File stays on disk.
+
+This is the new replacement for the old:
+
+```
+git reset HEAD config.env
+```
+
+---
+
+# 📌 **STEP 6 — Make a wrong commit and remove everything (`--hard`)**
+
+Make a mistake:
+
+```bash
+echo "Wrong data" >> app.txt
+git add .
+git commit -m "Mistaken commit"
+```
+
+Now undo:
+
+```bash
+git reset --hard HEAD~1
+```
+
+### ✔ Explanation (very important)
+
+* `--hard` touches BOTH staging area **and** working directory.
+* You lose: commit + changes + file edits.
+
+⚠ **Dangerous command: irreversible unless you know how to use reflog.**
+
+---
+
+# 📌 **STEP 7 — Delete a file and recover using Reflog**
+
+Delete the file:
+
+```bash
+rm app.txt
+git commit -am "Deleted app"
+```
+
+Now your project is broken.
+
+---
+
+# 📌 **STEP 8 — Recover using `git reflog` (ultimate recovery tool)**
+
+```bash
+git reflog
+```
+
+### ✔ Explanation
+
+Reflog shows ALL actions taken in your repo:
+
+Example output:
+
+```
+a12c3ef HEAD@{0}: commit: Deleted app
+c45b2ee HEAD@{1}: commit: Mistaken commit
+8e4c1aa HEAD@{2}: commit: Initial commit
+```
+
+### ✔ Restore repo to the previous safe state
+
+Pick the commit BEFORE delete:
+
+```bash
+git reset --hard <commit-id>
+```
+
+For example:
+
+```bash
+git reset --hard c45b2ee
+```
+
+### ✔ Explanation
+
+This restores the entire repo EXACTLY as it looked at that commit.
+
+---
+
+# 🔍 **Explanation of All Undo Commands**
+
+---
+
+## 🔵 **1. `git restore`**
+
+Used for **unstaging** or **discarding changed files**.
+
+### Unstage:
+
+```bash
+git restore --staged file.txt
+```
+
+### Discard working directory changes:
+
+```bash
+git restore file.txt
+```
+
+---
+
+## 🔵 **2. `git reset`**
+
+Used for undoing commits.
+
+### ✔ Soft reset
+
+```bash
+git reset --soft HEAD~1
+```
+
+* Undo commit
+* Keep staging + changes
+
+---
+
+### ✔ Mixed reset (default)
+
+```bash
+git reset HEAD~1
+```
+
+* Undo commit
+* Remove staging
+* Keep file changes
+
+---
+
+### ✔ Hard reset
+
+```bash
+git reset --hard HEAD~1
+```
+
+* Undo commit
+* Remove staging
+* Delete file changes
+
+⚠ Dangerous.
+
+---
+
+## 🔵 **3. `git commit --amend`**
+
+Fix last commit message OR add more files to last commit.
+
+```bash
+git commit --amend -m "Corrected message"
+```
+
+---
+
+## 🔵 **4. `git reflog`**
+
+Shows history of HEAD — used to recover lost commits.
+
+```bash
+git reflog
+```
+
+---
+
+# 🧪 **FULL PRACTICE SET (Do this to master Undoing Work)**
+
+Run these in order:
+
+### **1. Make wrong commit → fix with soft reset**
+
+### **2. Stage wrong file → restore**
+
+### **3. Edit file wrongly → reset mixed**
+
+### **4. Make irreversible mistake → recover with reflog**
+
+### **5. Delete file → restore with reflog**
+
+---
+
+# ⭐ Do you want **Project 1 as a PDF**?
+
+I can generate a downloadable **Git Undoing Work Lab PDF** with:
+
+📌 command explanations
+📌 diagrams
+📌 flowcharts
+📌 real outputs
+📌 exercises & solutions
+
+Just say: **“Make PDF for Project 1”**.
